@@ -1,1 +1,1614 @@
-
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 35,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "twamp_Anomaly"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 9
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "always"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "points"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeMin\" or r[\"_field\"] == \"roundTripTimeAverage\" or r[\"_field\"] == \"roundTripTimeMax\"\r\n  )\r\n\r\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"anomaly_twamp\" and r.original_metric == \"roundTripTimeMax\" and r[\"dst\"] =~ /${dst}/ and r.src =~ /${src}/ )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"twamp_Anomaly\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "RTT",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\w+) (.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"src\", \"dst\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeStdDev\" \r\n  )\r\n\r\n",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "RTT Deviation",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\w+) (.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "twamp_Anomaly"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 1
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 10
+              },
+              {
+                "id": "custom.showPoints",
+                "value": "always"
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "points"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMin\" or r[\"_field\"] == \"posRttJitterMax\" or r[\"_field\"] == \"posRttJitterAverage\"\r\n  )\r\n\r\n",
+          "refId": "positive",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"negRttJitterMin\" or r[\"_field\"] == \"negRttJitterMax\" or r[\"_field\"] == \"negRttJitterAverage\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n\r\n",
+          "refId": "negative",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"anomaly_twamp\" and r.dst == \"${dst}\" and r.src == \"${src}\" and r.original_metric == \"posRttJitterMax\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"twamp_Anomaly\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\r\n  |> yield(name: \"last\")",
+          "refId": "Anomaly",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Jitter (RTT Positive/Negative)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\w+) (.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "negRttJitterStdDev"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterStdDev\" or r[\"_field\"] == \"negRttJitterStdDev\"\r\n  )\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: if r._field == \"negRttJitterStdDev\" then float(v: r._value) * -1.0 else float(v: r._value)\r\n  }))",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Jitter Deviations",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\w+) (.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressMin\" or r[\"_field\"] == \"ingressMax\" or r[\"_field\"] == \"ingressAverage\"\r\n  )\r\n\r\n",
+          "refId": "ingress",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressMin\" or r[\"_field\"] == \"egressMax\" or r[\"_field\"] == \"egressAverage\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n",
+          "refId": "egress",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Ingress / Egress",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\w+) (.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressStdDev\")\r\n\r\n",
+          "refId": "ingress",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressStdDev\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n",
+          "refId": "egress",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Ingress / Egress Deviations",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^(\\w+) (.*)$",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "lapica",
+          "value": "lapica"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: -120m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\")\r\n  |> group(columns: [\"src_short\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"src_short\"])\r\n  |> group()\r\n",
+        "includeAll": false,
+        "label": "Source",
+        "name": "src",
+        "options": [],
+        "query": {
+          "0": "f",
+          "1": "r",
+          "2": "o",
+          "3": "m",
+          "4": "(",
+          "5": "b",
+          "6": "u",
+          "7": "c",
+          "8": "k",
+          "9": "e",
+          "10": "t",
+          "11": ":",
+          "12": " ",
+          "13": "\"",
+          "14": "r",
+          "15": "p",
+          "16": "m",
+          "17": "\"",
+          "18": ")",
+          "19": "\r",
+          "20": "\n",
+          "21": " ",
+          "22": " ",
+          "23": "|",
+          "24": ">",
+          "25": " ",
+          "26": "r",
+          "27": "a",
+          "28": "n",
+          "29": "g",
+          "30": "e",
+          "31": "(",
+          "32": "s",
+          "33": "t",
+          "34": "a",
+          "35": "r",
+          "36": "t",
+          "37": ":",
+          "38": " ",
+          "39": "-",
+          "40": "1",
+          "41": "2",
+          "42": "0",
+          "43": "m",
+          "44": ")",
+          "45": "\r",
+          "46": "\n",
+          "47": " ",
+          "48": " ",
+          "49": "|",
+          "50": ">",
+          "51": " ",
+          "52": "f",
+          "53": "i",
+          "54": "l",
+          "55": "t",
+          "56": "e",
+          "57": "r",
+          "58": "(",
+          "59": "f",
+          "60": "n",
+          "61": ":",
+          "62": " ",
+          "63": "(",
+          "64": "r",
+          "65": ")",
+          "66": " ",
+          "67": "=",
+          "68": ">",
+          "69": " ",
+          "70": "r",
+          "71": "[",
+          "72": "\"",
+          "73": "_",
+          "74": "m",
+          "75": "e",
+          "76": "a",
+          "77": "s",
+          "78": "u",
+          "79": "r",
+          "80": "e",
+          "81": "m",
+          "82": "e",
+          "83": "n",
+          "84": "t",
+          "85": "\"",
+          "86": "]",
+          "87": " ",
+          "88": "=",
+          "89": "=",
+          "90": " ",
+          "91": "\"",
+          "92": "e",
+          "93": "x",
+          "94": "e",
+          "95": "c",
+          "96": "_",
+          "97": "t",
+          "98": "w",
+          "99": "a",
+          "100": "m",
+          "101": "p",
+          "102": "\"",
+          "103": ")",
+          "104": "\r",
+          "105": "\n",
+          "106": " ",
+          "107": " ",
+          "108": "|",
+          "109": ">",
+          "110": " ",
+          "111": "f",
+          "112": "i",
+          "113": "l",
+          "114": "t",
+          "115": "e",
+          "116": "r",
+          "117": "(",
+          "118": "f",
+          "119": "n",
+          "120": ":",
+          "121": " ",
+          "122": "(",
+          "123": "r",
+          "124": ")",
+          "125": " ",
+          "126": "=",
+          "127": ">",
+          "128": " ",
+          "129": "r",
+          "130": "[",
+          "131": "\"",
+          "132": "_",
+          "133": "f",
+          "134": "i",
+          "135": "e",
+          "136": "l",
+          "137": "d",
+          "138": "\"",
+          "139": "]",
+          "140": " ",
+          "141": "=",
+          "142": "=",
+          "143": " ",
+          "144": "\"",
+          "145": "s",
+          "146": "a",
+          "147": "m",
+          "148": "p",
+          "149": "l",
+          "150": "e",
+          "151": "_",
+          "152": "i",
+          "153": "s",
+          "154": "_",
+          "155": "v",
+          "156": "a",
+          "157": "l",
+          "158": "i",
+          "159": "d",
+          "160": "\"",
+          "161": " ",
+          "162": "o",
+          "163": "r",
+          "164": " ",
+          "165": "r",
+          "166": "[",
+          "167": "\"",
+          "168": "_",
+          "169": "f",
+          "170": "i",
+          "171": "e",
+          "172": "l",
+          "173": "d",
+          "174": "\"",
+          "175": "]",
+          "176": " ",
+          "177": "=",
+          "178": "=",
+          "179": " ",
+          "180": "\"",
+          "181": "s",
+          "182": "r",
+          "183": "c",
+          "184": "_",
+          "185": "l",
+          "186": "a",
+          "187": "t",
+          "188": "i",
+          "189": "t",
+          "190": "u",
+          "191": "d",
+          "192": "e",
+          "193": "\"",
+          "194": " ",
+          "195": "o",
+          "196": "r",
+          "197": " ",
+          "198": "r",
+          "199": "[",
+          "200": "\"",
+          "201": "_",
+          "202": "f",
+          "203": "i",
+          "204": "e",
+          "205": "l",
+          "206": "d",
+          "207": "\"",
+          "208": "]",
+          "209": " ",
+          "210": "=",
+          "211": "=",
+          "212": " ",
+          "213": "\"",
+          "214": "s",
+          "215": "r",
+          "216": "c",
+          "217": "_",
+          "218": "l",
+          "219": "o",
+          "220": "n",
+          "221": "g",
+          "222": "i",
+          "223": "t",
+          "224": "u",
+          "225": "d",
+          "226": "e",
+          "227": "\"",
+          "228": ")",
+          "229": "\r",
+          "230": "\n",
+          "231": " ",
+          "232": " ",
+          "233": "|",
+          "234": ">",
+          "235": " ",
+          "236": "g",
+          "237": "r",
+          "238": "o",
+          "239": "u",
+          "240": "p",
+          "241": "(",
+          "242": "c",
+          "243": "o",
+          "244": "l",
+          "245": "u",
+          "246": "m",
+          "247": "n",
+          "248": "s",
+          "249": ":",
+          "250": " ",
+          "251": "[",
+          "252": "\"",
+          "253": "s",
+          "254": "r",
+          "255": "c",
+          "256": "_",
+          "257": "s",
+          "258": "h",
+          "259": "o",
+          "260": "r",
+          "261": "t",
+          "262": "\"",
+          "263": "]",
+          "264": ")",
+          "265": "\r",
+          "266": "\n",
+          "267": " ",
+          "268": " ",
+          "269": "|",
+          "270": ">",
+          "271": " ",
+          "272": "p",
+          "273": "i",
+          "274": "v",
+          "275": "o",
+          "276": "t",
+          "277": "(",
+          "278": "r",
+          "279": "o",
+          "280": "w",
+          "281": "K",
+          "282": "e",
+          "283": "y",
+          "284": ":",
+          "285": " ",
+          "286": "[",
+          "287": "\"",
+          "288": "_",
+          "289": "t",
+          "290": "i",
+          "291": "m",
+          "292": "e",
+          "293": "\"",
+          "294": "]",
+          "295": ",",
+          "296": " ",
+          "297": "c",
+          "298": "o",
+          "299": "l",
+          "300": "u",
+          "301": "m",
+          "302": "n",
+          "303": "K",
+          "304": "e",
+          "305": "y",
+          "306": ":",
+          "307": " ",
+          "308": "[",
+          "309": "\"",
+          "310": "_",
+          "311": "f",
+          "312": "i",
+          "313": "e",
+          "314": "l",
+          "315": "d",
+          "316": "\"",
+          "317": "]",
+          "318": ",",
+          "319": " ",
+          "320": "v",
+          "321": "a",
+          "322": "l",
+          "323": "u",
+          "324": "e",
+          "325": "C",
+          "326": "o",
+          "327": "l",
+          "328": "u",
+          "329": "m",
+          "330": "n",
+          "331": ":",
+          "332": " ",
+          "333": "\"",
+          "334": "_",
+          "335": "v",
+          "336": "a",
+          "337": "l",
+          "338": "u",
+          "339": "e",
+          "340": "\"",
+          "341": ")",
+          "342": "\r",
+          "343": "\n",
+          "344": " ",
+          "345": " ",
+          "346": "|",
+          "347": ">",
+          "348": " ",
+          "349": "l",
+          "350": "a",
+          "351": "s",
+          "352": "t",
+          "353": "(",
+          "354": "c",
+          "355": "o",
+          "356": "l",
+          "357": "u",
+          "358": "m",
+          "359": "n",
+          "360": ":",
+          "361": " ",
+          "362": "\"",
+          "363": "_",
+          "364": "t",
+          "365": "i",
+          "366": "m",
+          "367": "e",
+          "368": "\"",
+          "369": ")",
+          "370": "\r",
+          "371": "\n",
+          "372": " ",
+          "373": " ",
+          "374": "|",
+          "375": ">",
+          "376": " ",
+          "377": "k",
+          "378": "e",
+          "379": "e",
+          "380": "p",
+          "381": "(",
+          "382": "c",
+          "383": "o",
+          "384": "l",
+          "385": "u",
+          "386": "m",
+          "387": "n",
+          "388": "s",
+          "389": ":",
+          "390": " ",
+          "391": "[",
+          "392": "\"",
+          "393": "s",
+          "394": "r",
+          "395": "c",
+          "396": "_",
+          "397": "s",
+          "398": "h",
+          "399": "o",
+          "400": "r",
+          "401": "t",
+          "402": "\"",
+          "403": "]",
+          "404": ")",
+          "405": "\r",
+          "406": "\n",
+          "407": " ",
+          "408": " ",
+          "409": "|",
+          "410": ">",
+          "411": " ",
+          "412": "g",
+          "413": "r",
+          "414": "o",
+          "415": "u",
+          "416": "p",
+          "417": "(",
+          "418": ")",
+          "419": "\r",
+          "420": "\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -120m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\")\r\n  |> group(columns: [\"src_short\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"src_short\"])\r\n  |> group()\r\n"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "uab",
+          "value": "uab"
+        },
+        "definition": "from(bucket: v.defaultBucket)\n  |> range(start: -120m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"dst_latitude\" or r[\"_field\"] == \"dst_longitude\")\n  |> group(columns: [\"dst_short\"])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"_time\")\n  |> keep(columns: [\"dst_short\"])\n  |> group()\n",
+        "label": "Destination",
+        "name": "dst",
+        "options": [],
+        "query": {
+          "query": "from(bucket: v.defaultBucket)\n  |> range(start: -120m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"dst_latitude\" or r[\"_field\"] == \"dst_longitude\")\n  |> group(columns: [\"dst_short\"])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"_time\")\n  |> keep(columns: [\"dst_short\"])\n  |> group()\n"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Timemap - Latency / Jitter Details",
+  "uid": "geomap-timemap-latency-jitter-details",
+  "version": 6,
+  "weekStart": "",
+  "__inputs": [
+  {
+    "name": "DS_INFLUXDB",
+    "label": "InfluxDB",
+    "type": "datasource",
+    "pluginId": "influxdb"
+  },
+  {
+    "name": "DS_INFINITY",
+    "label": "Infinity",
+    "type": "datasource",
+    "pluginId": "yesoreyeram-infinity-datasource"
+  }
+]
+}
