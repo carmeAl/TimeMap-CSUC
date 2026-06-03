@@ -1,0 +1,57 @@
+conf ter
+ip sla responder
+write memory
+Configuremos los ip sla senders
+Pedraforca
+conf ter  
+ 
+# --- Borrar configuraciones anteriores ---  
+no ip sla 219
+no ip sla 220
+no ip sla 221
+no ip sla 222
+ 
+# --- Configurar SLA 219 (UAB) ---  
+ip sla 219
+udp-jitter 10.0.0.19 5000 source-ip 10.0.0.2
+tag uab--pedraforca--uab
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Configurar SLA 220 (UB-FF) ---  
+ip sla 220
+udp-jitter 10.0.0.20 5000 source-ip 10.0.0.2
+tag ub--pedraforca--ub-ff
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Configurar SLA 221 (UdG) ---  
+ip sla 221
+udp-jitter 10.0.0.21 5000 source-ip 10.0.0.2
+tag udg--pedraforca--udg
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Configurar SLA 222 (UdG-ParcUdg) ---  
+ip sla 222
+udp-jitter 10.0.0.22 5000 source-ip 10.0.0.2
+tag udg--pedraforca--udg-parcudg
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Programar todas las sondas ---  
+ip sla schedule 219 life forever start-time now
+ip sla schedule 220 life forever start-time now
+ip sla schedule 221 life forever start-time now
+ip sla schedule 222 life forever start-time now
+ 
+exit
+write memory
