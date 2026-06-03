@@ -1,0 +1,51 @@
+conf ter 
+ 
+no ip sla 1019
+no ip sla 1020
+no ip sla 1021
+no ip sla 1022
+ 
+# --- Configurar SLA 219 (UAB) --- 
+ip sla 1019
+udp-jitter 10.0.0.19 5000 source-ip 10.0.0.10
+tag uab--lapica--uab
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Configurar SLA 220 (UB-FF) --- 
+ip sla 1020
+udp-jitter 10.0.0.20 5000 source-ip 10.0.0.10
+tag ub--lapica--ub-ff
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Configurar SLA 221 (UdG) --- 
+ip sla 1021
+udp-jitter 10.0.0.21 5000 source-ip 10.0.0.10
+tag udg--lapica--udg
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Configurar SLA 222 (UdG-ParcUdg) --- 
+ip sla 1022
+udp-jitter 10.0.0.22 5000 source-ip 10.0.0.10
+tag udg--lapica--udg-parcudg
+threshold 3000
+timeout 3000
+frequency 60
+exit
+ 
+# --- Programar todas las sondas --- 
+ip sla schedule 1019 life forever start-time now
+ip sla schedule 1020 life forever start-time now
+ip sla schedule 1021 life forever start-time now
+ip sla schedule 1022 life forever start-time now
+ 
+exit
+write memory
