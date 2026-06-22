@@ -4,16 +4,16 @@ import os, sys, re, subprocess, json
 
 # --- TABLA DE UBICACIONES Y CLIENTES CSUC ---
 CSUC_LOCATIONS = {
-    "lapica": {"latitude": aqui_la_latitude , "longitude": la_longitude_aqui},
-    "pedraforca": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "uab": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "uab-cs": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "uab-r": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "uao": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "ub": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "ub-ff": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "udg": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
-    "udg-parcudg": {"latitude": aqui_la_latitude, "longitude": la_longitude_aqui},
+    "lapica": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.10", "group": "csuc"},
+    "pedraforca": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.2", "group": "csuc"},
+    "uab": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.19", "group": "uab"},
+    "uab-cs": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.23", "group": "uab"},
+    "uab-r": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.24", "group": "uab"},
+    "uao": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.25", "group": "uao"},
+    "ub": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.26", "group": "ub"},
+    "ub-ff": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.20", "group": "ub"},
+    "udg": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.21", "group": "udg"},
+    "udg-parcudg": {"lat": latitude_aqui, "lon": longitud_aqui, "ip": "10.0.0.22", "group": "udg"},
 }
 
 SERVER_IP = "10.0.0.13"
@@ -83,4 +83,3 @@ def main():
 
 if __name__ == "__main__":
     print(json.dumps(main()))
-
