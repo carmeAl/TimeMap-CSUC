@@ -80,7 +80,7 @@ def fetch_data(ip, community):
                     dst_geo = CSUC_LOCATIONS.get(short_dst, {"latitude": 0.0, "longitude": 0.0})
 
                     results[sla_id] = {
-                        "measurement": "exec_rpm",
+                        "measurement": "exec_snmp",
                         "time": now,
                         "cliente": cliente,
                         "src_short": short_src,
