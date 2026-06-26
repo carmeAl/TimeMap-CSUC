@@ -157,7 +157,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeMin\" or r[\"_field\"] == \"roundTripTimeAverage\" or r[\"_field\"] == \"roundTripTimeMax\"\r\n  )\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeMin\" or r[\"_field\"] == \"roundTripTimeAverage\" or r[\"_field\"] == \"roundTripTimeMax\"\r\n  )\r\n\r\n",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -335,7 +335,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"src\", \"dst\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeStdDev\" \r\n  )\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"src\", \"dst\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeStdDev\" \r\n  )\r\n\r\n",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -497,7 +497,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMin\" or r[\"_field\"] == \"posRttJitterMax\" or r[\"_field\"] == \"posRttJitterAverage\"\r\n  )\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMin\" or r[\"_field\"] == \"posRttJitterMax\" or r[\"_field\"] == \"posRttJitterAverage\"\r\n  )\r\n\r\n",
           "refId": "positive",
           "resultFormat": "time_series",
           "select": [
@@ -538,7 +538,7 @@
           "hide": false,
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"negRttJitterMin\" or r[\"_field\"] == \"negRttJitterMax\" or r[\"_field\"] == \"negRttJitterAverage\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"negRttJitterMin\" or r[\"_field\"] == \"negRttJitterMax\" or r[\"_field\"] == \"negRttJitterAverage\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n\r\n",
           "refId": "negative",
           "resultFormat": "time_series",
           "select": [
@@ -732,7 +732,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterStdDev\" or r[\"_field\"] == \"negRttJitterStdDev\"\r\n  )\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: if r._field == \"negRttJitterStdDev\" then float(v: r._value) * -1.0 else float(v: r._value)\r\n  }))",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterStdDev\" or r[\"_field\"] == \"negRttJitterStdDev\"\r\n  )\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: if r._field == \"negRttJitterStdDev\" then float(v: r._value) * -1.0 else float(v: r._value)\r\n  }))",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -869,7 +869,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressMin\" or r[\"_field\"] == \"ingressMax\" or r[\"_field\"] == \"ingressAverage\"\r\n  )\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressMin\" or r[\"_field\"] == \"ingressMax\" or r[\"_field\"] == \"ingressAverage\"\r\n  )\r\n\r\n",
           "refId": "ingress",
           "resultFormat": "time_series",
           "select": [
@@ -910,7 +910,7 @@
           "hide": false,
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressMin\" or r[\"_field\"] == \"egressMax\" or r[\"_field\"] == \"egressAverage\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressMin\" or r[\"_field\"] == \"egressMax\" or r[\"_field\"] == \"egressAverage\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n",
           "refId": "egress",
           "resultFormat": "time_series",
           "select": [
@@ -1047,7 +1047,7 @@
           ],
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressStdDev\")\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressStdDev\")\r\n\r\n",
           "refId": "ingress",
           "resultFormat": "time_series",
           "select": [
@@ -1088,7 +1088,7 @@
           "hide": false,
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_rpm\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressStdDev\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])  \r\n  |> filter(fn: (r) =>\r\n    r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\" \r\n  )\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressStdDev\"\r\n  )\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0  }))\r\n\r\n",
           "refId": "egress",
           "resultFormat": "time_series",
           "select": [
@@ -1136,7 +1136,7 @@
           "type": "influxdb",
           "uid": "${DS_INFLUXDB}"
         },
-        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: -120m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\")\r\n  |> group(columns: [\"src_short\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"src_short\"])\r\n  |> group()\r\n",
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: -120m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\")\r\n  |> group(columns: [\"src_short\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"src_short\"])\r\n  |> group()\r\n",
         "includeAll": false,
         "label": "Source",
         "name": "src",
@@ -1563,7 +1563,7 @@
           "418": ")",
           "419": "\r",
           "420": "\n",
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -120m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\")\r\n  |> group(columns: [\"src_short\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"src_short\"])\r\n  |> group()\r\n"
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -120m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\")\r\n  |> group(columns: [\"src_short\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"src_short\"])\r\n  |> group()\r\n"
         },
         "refresh": 1,
         "regex": "",
@@ -1574,12 +1574,12 @@
           "text": "uab",
           "value": "uab"
         },
-        "definition": "from(bucket: v.defaultBucket)\n  |> range(start: -120m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"dst_latitude\" or r[\"_field\"] == \"dst_longitude\")\n  |> group(columns: [\"dst_short\"])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"_time\")\n  |> keep(columns: [\"dst_short\"])\n  |> group()\n",
+        "definition": "from(bucket: v.defaultBucket)\n  |> range(start: -120m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"dst_latitude\" or r[\"_field\"] == \"dst_longitude\")\n  |> group(columns: [\"dst_short\"])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"_time\")\n  |> keep(columns: [\"dst_short\"])\n  |> group()\n",
         "label": "Destination",
         "name": "dst",
         "options": [],
         "query": {
-          "query": "from(bucket: v.defaultBucket)\n  |> range(start: -120m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"dst_latitude\" or r[\"_field\"] == \"dst_longitude\")\n  |> group(columns: [\"dst_short\"])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"_time\")\n  |> keep(columns: [\"dst_short\"])\n  |> group()\n"
+          "query": "from(bucket: v.defaultBucket)\n  |> range(start: -120m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"dst_latitude\" or r[\"_field\"] == \"dst_longitude\")\n  |> group(columns: [\"dst_short\"])\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> last(column: \"_time\")\n  |> keep(columns: [\"dst_short\"])\n  |> group()\n"
         },
         "refresh": 1,
         "regex": "",
