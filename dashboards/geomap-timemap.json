@@ -501,7 +501,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "// Obtenemos posiciones desde los campos de origen\r\nsrc_nodes = from(bucket: v.defaultBucket)\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r._measurement == \"exec_rpm\")\r\n  |> filter(fn: (r) => r._field == \"src_latitude\" or r._field == \"src_longitude\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"src_short\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ id: r.src_short, latitude: float(v: r.src_latitude), longitude: float(v: r.src_longitude) }))\r\n\r\n// Obtenemos posiciones desde los campos de destino\r\ndst_nodes = from(bucket: v.defaultBucket)\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r._measurement == \"exec_rpm\")\r\n  |> filter(fn: (r) => r._field == \"dst_latitude\" or r._field == \"dst_longitude\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"dst_short\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ id: r.dst_short, latitude: float(v: r.dst_latitude), longitude: float(v: r.dst_longitude) }))\r\n\r\n// Unimos todo en una sola lista de nodos únicos\r\nunion(tables: [src_nodes, dst_nodes])\r\n  |> group(columns: [\"id\"])\r\n  |> last(column: \"latitude\")\r\n  |> group()",
+          "query": "// Obtenemos posiciones desde los campos de origen\r\nsrc_nodes = from(bucket: v.defaultBucket)\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\")\r\n  |> filter(fn: (r) => r._field == \"src_latitude\" or r._field == \"src_longitude\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"src_short\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ id: r.src_short, latitude: float(v: r.src_latitude), longitude: float(v: r.src_longitude) }))\r\n\r\n// Obtenemos posiciones desde los campos de destino\r\ndst_nodes = from(bucket: v.defaultBucket)\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\")\r\n  |> filter(fn: (r) => r._field == \"dst_latitude\" or r._field == \"dst_longitude\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"dst_short\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({ id: r.dst_short, latitude: float(v: r.dst_latitude), longitude: float(v: r.dst_longitude) }))\r\n\r\n// Unimos todo en una sola lista de nodos únicos\r\nunion(tables: [src_nodes, dst_nodes])\r\n  |> group(columns: [\"id\"])\r\n  |> last(column: \"latitude\")\r\n  |> group()",
           "refId": "Nodes"
         },
         {
@@ -510,7 +510,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start:-10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMax\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group()\r\n  |> keep(columns: [\"_time\", \"dst_short\", \"src_short\", \"_value\"])\r\n  |> rename(columns: {_value:\"posRttJitterMax\", dst_short:\"target\", src_short:\"source\"})\r\n  |> group(columns:[\"source\",\"target\"])\r\n  |> last(column: \"_time\")\r\n  |> group()",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start:-10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMax\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group()\r\n  |> keep(columns: [\"_time\", \"dst_short\", \"src_short\", \"_value\"])\r\n  |> rename(columns: {_value:\"posRttJitterMax\", dst_short:\"target\", src_short:\"source\"})\r\n  |> group(columns:[\"source\",\"target\"])\r\n  |> last(column: \"_time\")\r\n  |> group()",
           "refId": "Edges"
         }
       ],
@@ -828,7 +828,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\" or r[\"_field\"] == \"flavor\")\r\n  |> group(columns: [\"src_short\", \"flavor\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"_time\",\"src_longitude\",\"src_latitude\", \"sample_is_valid\",\"src_short\", \"flavor\"])\r\n  |> group()\r\n  |> rename(columns: {src_short:\"id\", src_latitude:\"latitude\", src_longitude:\"longitude\", sample_is_valid:\"_value\"})",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\" or r[\"_field\"] == \"src_latitude\" or r[\"_field\"] == \"src_longitude\" or r[\"_field\"] == \"flavor\")\r\n  |> group(columns: [\"src_short\", \"flavor\"])\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> last(column: \"_time\")\r\n  |> keep(columns: [\"_time\",\"src_longitude\",\"src_latitude\", \"sample_is_valid\",\"src_short\", \"flavor\"])\r\n  |> group()\r\n  |> rename(columns: {src_short:\"id\", src_latitude:\"latitude\", src_longitude:\"longitude\", sample_is_valid:\"_value\"})",
           "refId": "A"
         }
       ],
@@ -895,7 +895,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start:-10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMax\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group()\r\n  |> keep(columns: [\"_time\", \"dst_short\", \"src_short\", \"_value\"])\r\n  |> rename(columns: {_value:\"posRttJitterMax\", dst_short:\"target\", src_short:\"source\"})\r\n  |> group(columns:[\"source\",\"target\"])\r\n  |> last(column: \"_time\")\r\n  |> group()",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start:-10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMax\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group()\r\n  |> keep(columns: [\"_time\", \"dst_short\", \"src_short\", \"_value\"])\r\n  |> rename(columns: {_value:\"posRttJitterMax\", dst_short:\"target\", src_short:\"source\"})\r\n  |> group(columns:[\"source\",\"target\"])\r\n  |> last(column: \"_time\")\r\n  |> group()",
           "refId": "A"
         }
       ],
@@ -962,7 +962,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start:-10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_rpm\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group()\r\n  |> keep(columns: [\"_time\", \"dst_short\", \"src_short\", \"_value\"])\r\n  |> rename(columns: {_value:\"sample_is_valid\", dst_short:\"target\", src_short:\"source\"})\r\n  |> group(columns:[\"source\",\"target\"])\r\n  |> last(column: \"_time\")\r\n  |> group()",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start:-10m)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"sample_is_valid\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: max, createEmpty: false)\r\n  |> group()\r\n  |> keep(columns: [\"_time\", \"dst_short\", \"src_short\", \"_value\"])\r\n  |> rename(columns: {_value:\"sample_is_valid\", dst_short:\"target\", src_short:\"source\"})\r\n  |> group(columns:[\"source\",\"target\"])\r\n  |> last(column: \"_time\")\r\n  |> group()",
           "refId": "A"
         }
       ],
