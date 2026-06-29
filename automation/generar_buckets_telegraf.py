@@ -5,26 +5,27 @@ import os
 import subprocess
 
 # --- CONFIGURACIÓN ---
-EXCEL_FILE = "tu_excel_aqui"
+EXCEL_FILE = "tu_excel_aqui"  # Pon aquí la ruta de tu archivo Excel
 SHEET_NAME = "Clients"
 CONF_FILE = "/etc/telegraf/telegraf.conf"
 INFLUX_URL = "http://127.0.0.1:8086"
-INFLUX_TOKEN = "tu_token_secreto_aqui"
-INFLUX_ORG = "tu_organizacion_aqui"
+INFLUX_TOKEN = "c5e9559188b60b9d01fdfd48da3a19b9fe1cb68ccedb6d4bba594000251a8502"
+INFLUX_ORG = "CSUC"
 
 def update_infrastructure():
     # 1. Obtener clientes del Excel
     try:
         df = pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME, usecols=[0], skiprows=1, header=0)
         clientes_raw = df.iloc[:, 0].dropna().astype(str).str.strip()
-        # Filtramos el total y nombres raros
-        lista_clientes = [c.lower().replace(" ", "_").replace("@", "_") for c in clientes_raw if "Total general" not in c]
-        lista_clientes = list(set(lista_clientes)) # Quitar duplicados
+        
+        # Filtramos cualquier fila que contenga la palabra "total" para evitar errores
+        lista_clientes = [c.lower().replace(" ", "_").replace("@", "_") for c in clientes_raw if "total" not in c.lower()]
+        lista_clientes = list(set(lista_clientes)) # Quitamos duplicados
     except Exception as e:
         print(f"[!] Error leyendo el Excel: {e}")
         return
 
-    # 2. Crear Buckets en InfluxDB
+    # 2. Crear Buckets en InfluxDB (Uno por cliente, con su nombre limpio)
     client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_ORG)
     buckets_api = client.buckets_api()
     
@@ -39,14 +40,16 @@ def update_infrastructure():
     # 3. Generar el bloque de texto para Telegraf
     nuevo_bloque_outputs = "\n"
     for cliente in lista_clientes:
-        nuevo_bloque_outputs += f
-        """[[outputs.influxdb_v2]]
+        # Creamos un solo bloque por cliente que aceptará tanto exec_snmp como exec_twamp
+        nuevo_bloque_outputs += f"""[[outputs.influxdb_v2]]
   urls = ["{INFLUX_URL}"]
   token = "{INFLUX_TOKEN}"
   organization = "{INFLUX_ORG}"
   bucket = "{cliente}"
   [outputs.influxdb_v2.tagpass]
-    cliente = ["{cliente}"] """
+    cliente = ["{cliente}"]
+
+"""
 
     # 4. Inyectar en telegraf.conf usando los marcadores
     try:
@@ -61,7 +64,7 @@ def update_infrastructure():
         with open(CONF_FILE, "w") as f:
             f.write(nuevo_contenido)
         
-        print(f"[OK] {len(lista_clientes)} clientes configurados en {CONF_FILE}")
+        print(f"[OK] {len(lista_clientes)} clientes configurados correctamente en {CONF_FILE}")
 
     except PermissionError:
         print(f"[!] Error de permisos: No se pudo escribir en {CONF_FILE}. Intenta con sudo -E.")
@@ -81,4 +84,3 @@ def update_infrastructure():
 
 if __name__ == "__main__":
     update_infrastructure()
-
