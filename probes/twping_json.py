@@ -4,6 +4,7 @@ import os, sys, re, subprocess, json
 
 # --- TABLA DE UBICACIONES Y CLIENTES CSUC ---
 CSUC_LOCATIONS = {
+    "servertimemap2": {"lat": 41.387713, "lon":2.111731 , "ip": "10.0.0.13", "group": "csuc"},
     "lapica": {"lat": 41.351687, "lon": 2.137114, "ip": "10.0.0.10", "port": 9000, "group": "csuc"},
     "pedraforca": {"lat": 41.387713, "lon": 2.111731, "ip": "10.0.0.2", "group": "csuc"},
     "uab": {"lat": 41.503718, "lon": 2.086401, "ip": "10.0.0.19", "group": "uab"},
