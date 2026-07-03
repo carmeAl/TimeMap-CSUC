@@ -1,0 +1,591 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1722,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB_uab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeMin\" or r[\"_field\"] == \"roundTripTimeAverage\" or r[\"_field\"] == \"roundTripTimeMax\")",
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "SNMP - RTT",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB_uab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"src\", \"dst\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"roundTripTimeStdDev\")",
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "SNMP - RTT Deviation",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB_uab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterMin\" or r[\"_field\"] == \"posRttJitterMax\" or r[\"_field\"] == \"posRttJitterAverage\")",
+          "refId": "positive",
+          "resultFormat": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"negRttJitterMin\" or r[\"_field\"] == \"negRttJitterMax\" or r[\"_field\"] == \"negRttJitterAverage\")\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))",
+          "refId": "negative",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "SNMP - Jitter (RTT Positive/Negative Mirror)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB_uab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"posRttJitterStdDev\" or r[\"_field\"] == \"negRttJitterStdDev\")",
+          "refId": "A",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "SNMP - Jitter Deviations",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB_uab"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"ingressMin\" or r[\"_field\"] == \"ingressMax\" or r[\"_field\"] == \"ingressAverage\")",
+          "refId": "ingress",
+          "resultFormat": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "InfluxDB_uab"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop:v.timeRangeStop)\r\n  |> drop(columns: [\"host\", \"src_ip\", \"dst_ip\", \"dst\", \"src\"])\r\n  |> filter(fn: (r) => r._measurement == \"exec_snmp\" and r.src_short == \"${src}\" and r.dst_short == \"${dst}\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"egressMin\" or r[\"_field\"] == \"egressMax\" or r[\"_field\"] == \"egressAverage\")\r\n  |> map(fn: (r) => ({ r with _value: r._value * -1.0 }))",
+          "refId": "egress",
+          "resultFormat": "time_series"
+        }
+      ],
+      "title": "SNMP - Ingress / Egress Mirror",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "lapica",
+          "value": "lapica"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "InfluxDB_uab"
+        },
+        "definition": "from(bucket: v.defaultBucket) |> range(start: -120m) |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\") |> group(columns: [\"src_short\"]) |> distinct(column: \"src_short\") |> keep(columns: [\"_value\"])",
+        "includeAll": false,
+        "label": "Source",
+        "name": "src",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket) |> range(start: -120m) |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\") |> group(columns: [\"src_short\"]) |> distinct(column: \"src_short\") |> keep(columns: [\"_value\"])",
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "uab",
+          "value": "uab"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "InfluxDB_uab"
+        },
+        "definition": "from(bucket: v.defaultBucket) |> range(start: -120m) |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\" and r[\"src_short\"] =~ /${src:regex}/) |> group(columns: [\"dst_short\"]) |> distinct(column: \"dst_short\") |> keep(columns: [\"_value\"])",
+        "includeAll": false,
+        "label": "Destination",
+        "name": "dst",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket) |> range(start: -120m) |> filter(fn: (r) => r[\"_measurement\"] == \"exec_snmp\" and r[\"src_short\"] =~ /${src:regex}/) |> group(columns: [\"dst_short\"]) |> distinct(column: \"dst_short\") |> keep(columns: [\"_value\"])",
+        "refresh": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Timemap - SNMP Metrics",
+  "uid": "snmp-metrics-dashboard",
+  "version": 3,
+  "weekStart": ""
+}
